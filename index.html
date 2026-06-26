@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国建设银行 · 对公转账与电子凭证系统</title>
+    <style>
+        :root {
+            --ccb-blue: #0052A3;
+            --ccb-blue-dark: #003D7A;
+            --ccb-blue-light: #0066CC;
+            --ccb-gold: #C8960C;
+            --ccb-red: #D50000;
+            --ccb-bg: #F2F4F7;
+            --ccb-white: #FFFFFF;
+            --ccb-border: #D9DDE3;
+            --ccb-text: #2C2E33;
+            --ccb-text-light: #6B6F76;
+            --ccb-text-lighter: #9499A0;
+            --ccb-success: #1B8C3C;
+            --ccb-warning-bg: #FFF8E6;
+            --ccb-warning-border: #F5D77A;
+            --ccb-input-bg: #FAFBFD;
+            --ccb-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --ccb-radius: 6px;
+            --ccb-radius-lg: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+            background: #E8ECF1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px 60px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 顶部导航条 */
+        .top-bar {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: var(--ccb-radius-lg);
+            box-shadow: var(--ccb-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            margin-bottom: 20px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--ccb-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+        }
+        .bank-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ccb-blue);
+            letter-spacing: 1px;
+        }
+        .bank-name span {
+            font-weight: 400;
+            font-size: 13px;
+            color: var(--ccb-text-light);
+            margin-left: 6px;
+        }
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--ccb-success);
+            font-weight: 500;
+        }
+
+        /* 主容器 */
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            border-radius: var(--ccb-radius-lg);
+            box-shadow: var(--ccb-shadow);
+            overflow: hidden;
+        }
+
+        /* 步骤条 */
+        .steps-bar {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(180deg, #F8FAFD 0%, #F0F3F8 100%);
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--ccb-border);
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ccb-text-lighter);
+        }
+        .step-item.active {
+            color: var(--ccb-blue);
+            font-weight: 600;
+        }
+        .step-item.done {
+            color: var(--ccb-success);
+        }
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            border: 2px solid currentColor;
+            flex-shrink: 0;
+        }
+        .step-item.active .step-num {
+            background: var(--ccb-blue);
+            border-color: var(--ccb-blue);
+            color: #fff;
+        }
+        .step-item.done .step-num {
+            background: var(--ccb-success);
+            border-color: var(--ccb-success);
+            color: #fff;
+        }
+        .step-arrow {
+            color: var(--ccb-text-lighter);
+            font-size: 12px;
+            margin: 0 4px;
+        }
+
+        /* 表单区域 */
+        .form-wrapper {
+            padding: 28px 32px 20px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ccb-text);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--ccb-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: var(--ccb-blue);
+            border-radius: 2px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px 20px;
+            margin-bottom: 10px;
+        }
+        .form-grid.col-full {
+            grid-template-columns: 1fr;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ccb-text);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .required-star {
+            color: var(--ccb-red);
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .optional-tag {
+            font-size: 11px;
+            color: var(--ccb-text-lighter);
+            font-weight: 400;
+            margin-left: 2px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            height: 42px;
+            padding: 0 14px;
+            border: 1.5px solid var(--ccb-border);
+            border-radius: var(--ccb-radius);
+            font-size: 14px;
+            color: var(--ccb-text);
+            background: var(--ccb-input-bg);
+            transition: 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            height: 80px;
+            padding: 10px 14px;
+            resize: vertical;
+            min-height: 80px;
+            max-height: 160px;
+            line-height: 1.5;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--ccb-blue-light);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 82, 163, 0.08);
+        }
+        .form-group input.error,
+        .form-group select.error,
+        .form-group textarea.error {
+            border-color: var(--ccb-red);
+            background: #FFFBFB;
+        }
+        .error-msg {
+            font-size: 12px;
+            color: var(--ccb-red);
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-group input.error+.error-msg,
+        .form-group select.error+.error-msg,
+        .form-group textarea.error+.error-msg {
+            display: flex;
+        }
+
+        .amount-input-wrapper {
+            position: relative;
+        }
+        .currency-symbol {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ccb-text);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .amount-input-wrapper input {
+            padding-left: 36px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .amount-cn {
+            font-size: 12px;
+            color: var(--ccb-text-light);
+            margin-top: 2px;
+            min-height: 18px;
+            font-weight: 500;
+        }
+
+        .captcha-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .captcha-img {
+            width: 110px;
+            height: 42px;
+            border-radius: var(--ccb-radius);
+            background: linear-gradient(135deg, #E8EDF4, #DCE3EB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #3A4A5C;
+            user-select: none;
+            border: 1.5px solid var(--ccb-border);
+            flex-shrink: 0;
+            font-family: 'Courier New', monospace;
+            font-style: italic;
+            position: relative;
+        }
+        .captcha-img:hover {
+            border-color: var(--ccb-blue-light);
+            background: linear-gradient(135deg, #DDE5F0, #CFD9E3);
+        }
+        .captcha-tip {
+            font-size: 11px;
+            color: var(--ccb-text-lighter);
+            cursor: pointer;
+            white-space: nowrap;
+            align-self: flex-end;
+            padding-bottom: 2px;
+        }
+        .captcha-tip:hover {
+            color: var(--ccb-blue);
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px dashed var(--ccb-border);
+            margin: 6px 0 18px;
+        }
+
+        .warning-box {
+            background: var(--ccb-warning-bg);
+            border: 1px solid var(--ccb-warning-border);
+            border-radius: var(--ccb-radius);
+            padding: 14px 18px;
+            margin: 16px 0 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: #8A6D14;
+            line-height: 1.6;
+        }
+        .warning-box strong {
+            color: #6B5200;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 36px;
+            border-radius: var(--ccb-radius);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+            outline: none;
+            font-family: inherit;
+            min-width: 120px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--ccb-blue);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(0, 82, 163, 0.3);
+        }
+        .btn-primary:hover {
+            background: var(--ccb-blue-light);
+            box-shadow: 0 5px 16px rgba(0, 82, 163, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: #fff;
+            color: var(--ccb-blue);
+            border: 1.5px solid var(--ccb-blue);
+        }
+        .btn-outline:hover {
+            background: #F5F8FC;
+            border-color: var(--ccb-blue-light);
+            color: var(--ccb-blue-light);
+        }
+        .btn-success {
+            background: var(--ccb-success);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(27, 140, 60, 0.3);
+        }
+        .btn-success:hover {
+            background: #239f44;
+            box-shadow: 0 5px 16px rgba(27, 140, 60, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* 成功面板 */
+        .result-panel {
+            background: #F0F9F3;
+            border: 1px solid #A3D9B1;
+            border-radius: var(--ccb-radius-lg);
+            padding: 24px;
+            margin: 20px 32px 24px;
+            text-align: center;
+            display: none;
+        }
+        .result-panel.show {
+            display: block;
+        }
+        .result-icon {
+            font-size: 48px;
+            color: var(--ccb-success);
+            margin-bottom: 10px;
+        }
+        .result-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ccb-text);
+            margin-bottom: 8px;
+        }
+        .result-detail {
+            font-size: 14px;
+            color: var(--ccb-text-light);
+            line-height: 1.8;
+        }
+        .result-detail span {
+            font-weight: 600;
+            color: var(--ccb-text);
+        }
+
+        /* 凭证预览区 */
+        .voucher-preview {
+            margin: 20px 32px 24px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .voucher-preview.show {
+            display: flex;
+        }
+        .voucher-preview h3 {
+            color: var(--ccb-blue);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .voucher-canvas-wrapper {
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+        #voucherCanvas {
+            display: block;
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+        }
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-note {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--ccb-text-lighter);
+            line-height: 1.6;
+        }
+
+        /* Toast */
+        .toast-overlay {
+            position: fixed;
+            top:0;left:0;right:0;bottom:0;
+            background: rgba(0,0,0,0.45);
+            z-index:1000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            animation: fadeIn 0.2s;
+        }
+        @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+        .toast-box {
+            background:#fff;
+            border-radius:14px;
+            padding:32px 28px 24px;
+            text-align:center;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            max-width:400px;
+            width:90%;
+            animation: popIn 0.3s;
+        }
+        @keyframes popIn{ from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
+        .toast-icon{ width:56px;height:56px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:30px; }
+        .toast-icon.success{ background:#E8F5E9;color:#2E7D32; }
+        .toast-title{ font-size:18px;font-weight:700;color:#2C2E33;margin-bottom:6px; }
+        .toast-msg{ font-size:14px;color:#6B6F76;margin-bottom:18px;line-height:1.5; }
+        .toast-btn{ padding:10px 40px;background:var(--ccb-blue);color:#fff;border:none;border-radius:22px;font-size:14px;font-weight:600;cursor:pointer; }
+
+        @media (max-width:600px){
+            .form-grid{ grid-template-columns:1fr; }
+            .top-bar{ padding:12px 16px; }
+            .form-wrapper{ padding:20px 16px; }
+            .steps-bar{ padding:14px 16px; gap:4px; font-size:12px; }
+            .step-item{ font-size:11px; }
+            .btn{ padding:12px 24px; font-size:14px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部 -->
+    <div class="top-bar">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="#fff" stroke-width="2.5"/><line x1="8" y1="10" x2="16" y2="10" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="14" x2="14" y2="14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="bank-name">中国建设银行<span>| 对公转账与电子凭证</span></div>
+        </div>
+        <div class="secure-badge">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 1L3 4v5c0 4 2.5 7.5 6 8.5 3.5-1 6-4.5 6-8.5V4L9 1z"/></svg>
+            安全电子回单系统
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="main-container" id="mainContainer">
+        <!-- 步骤条 -->
+        <div class="steps-bar" id="stepsBar">
+            <div class="step-item" id="step1"><span class="step-num">1</span> 填写信息</div>
+            <span class="step-arrow">▸</span>
+            <div class="step-item" id="step2"><span class="step-num">2</span> 确认转账</div>
+            <span class="step-arrow">▸</span>
+            <div class="step-item" id="step3"><span class="step-num">3</span> 生成凭证</div>
+        </div>
+
+        <!-- 表单视图 -->
+        <div id="formView">
+            <form class="form-wrapper" id="transferForm" novalidate>
+                <div class="section-title">付款方信息</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 付款账户名称</label>
+                        <input type="text" id="payerName" placeholder="请输入付款单位全称" maxlength="80">
+                        <span class="error-msg">⚠ 请输入付款账户名称</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 付款账号</label>
+                        <input type="text" id="payerAccount" placeholder="请输入19位付款账号" maxlength="19" inputmode="numeric">
+                        <span class="error-msg">⚠ 请输入正确的19位付款账号</span>
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="section-title">收款方信息</div>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label><span class="required-star">*</span> 收款单位名称</label>
+                        <input type="text" id="payeeName" placeholder="请输入收款单位全称（需与开户名称一致）" maxlength="80">
+                        <span class="error-msg">⚠ 请输入收款单位名称</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 收款账号</label>
+                        <input type="text" id="payeeAccount" placeholder="请输入收款账号" maxlength="25" inputmode="numeric">
+                        <span class="error-msg">⚠ 请输入正确的收款账号（10-25位）</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 收款银行</label>
+                        <select id="payeeBank">
+                            <option value="">请选择收款银行</option>
+                            <option value="中国工商银行">中国工商银行</option>
+                            <option value="中国农业银行">中国农业银行</option>
+                            <option value="中国银行">中国银行</option>
+                            <option value="中国建设银行">中国建设银行</option>
+                            <option value="交通银行">交通银行</option>
+                            <option value="招商银行">招商银行</option>
+                            <option value="浦发银行">浦发银行</option>
+                            <option value="中信银行">中信银行</option>
+                            <option value="兴业银行">兴业银行</option>
+                            <option value="民生银行">民生银行</option>
+                            <option value="光大银行">光大银行</option>
+                            <option value="平安银行">平安银行</option>
+                            <option value="华夏银行">华夏银行</option>
+                            <option value="广发银行">广发银行</option>
+                            <option value="邮储银行">中国邮政储蓄银行</option>
+                            <option value="other">其他银行</option>
+                        </select>
+                        <span class="error-msg">⚠ 请选择收款银行</span>
+                    </div>
+                    <div class="form-group" id="otherBankGroup" style="display:none;">
+                        <label><span class="required-star">*</span> 请输入银行名称</label>
+                        <input type="text" id="payeeBankOther" placeholder="请输入收款银行全称" maxlength="40">
+                        <span class="error-msg">⚠ 请输入银行名称</span>
+                    </div>
+                    <div class="form-group">
+                        <label>开户行网点 <span class="optional-tag">(选填)</span></label>
+                        <input type="text" id="payeeBranch" placeholder="如：XX支行/营业部" maxlength="60">
+                    </div>
+                </div>
+                <hr class="divider">
+                <div class="section-title">转账详情</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 转账金额</label>
+                        <div class="amount-input-wrapper">
+                            <span class="currency-symbol">¥</span>
+                            <input type="text" id="amount" placeholder="0.00" maxlength="15" inputmode="decimal">
+                        </div>
+                        <div class="amount-cn" id="amountCn"></div>
+                        <span class="error-msg">⚠ 请输入正确的金额（0.01-9,999,999,999.99）</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 用途</label>
+                        <select id="purpose">
+                            <option value="">请选择用途</option>
+                            <option value="货款">货款</option>
+                            <option value="服务费">服务费</option>
+                            <option value="咨询费">咨询费</option>
+                            <option value="工程款">工程款</option>
+                            <option value="设备采购">设备采购</option>
+                            <option value="租金">租金</option>
+                            <option value="保证金">保证金</option>
+                            <option value="还款">还款</option>
+                            <option value="工资">工资/劳务费</option>
+                            <option value="税款">税款</option>
+                            <option value="other">其他</option>
+                        </select>
+                        <span class="error-msg">⚠ 请选择用途</span>
+                    </div>
+                    <div class="form-group full-width" id="otherPurposeGroup" style="display:none;">
+                        <label><span class="required-star">*</span> 请注明用途</label>
+                        <input type="text" id="purposeOther" placeholder="请输入具体用途" maxlength="40">
+                        <span class="error-msg">⚠ 请输入具体用途</span>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>备注 <span class="optional-tag">(选填)</span></label>
+                        <textarea id="remark" placeholder="可填写附加说明信息" maxlength="200"></textarea>
+                    </div>
+                </div>
+                <div class="section-title">安全验证</div>
+                <div class="form-grid col-full">
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 短信验证码</label>
+                        <div class="captcha-row">
+                            <input type="text" id="smsCode" placeholder="请输入6位短信验证码" maxlength="6" inputmode="numeric">
+                            <button type="button" class="btn btn-outline" id="sendSmsBtn" style="min-width:auto;padding:10px 18px;font-size:13px;">获取验证码</button>
+                        </div>
+                        <span class="error-msg">⚠ 请输入6位短信验证码</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="required-star">*</span> 图形验证码</label>
+                        <div class="captcha-row">
+                            <input type="text" id="imageCaptcha" placeholder="请输入图形验证码" maxlength="4">
+                            <div class="captcha-img" id="captchaImg" title="点击刷新验证码"></div>
+                        </div>
+                        <span class="captcha-tip" id="refreshCaptchaTip">看不清？点击图片刷新</span>
+                        <span class="error-msg">⚠ 请输入正确的图形验证码</span>
+                    </div>
+                </div>
+                <div class="warning-box">
+                    <span style="font-size:18px;">🔔</span>
+                    <div><strong>安全提醒：</strong>请仔细核对收款方信息，对公转账一旦提交将无法实时撤回。单笔限额<strong>¥500万元</strong>，日累计限额<strong>¥2000万元</strong>。如遇可疑情况请拨打<strong>95533</strong>。</div>
+                </div>
+                <div class="btn-row">
+                    <button type="button" class="btn btn-outline" id="resetBtn">重 置</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">确认转账</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 结果面板 -->
+        <div class="result-panel" id="resultPanel">
+            <div class="result-icon">✅</div>
+            <div class="result-title">转账提交成功！</div>
+            <div class="result-detail" id="resultDetail"></div>
+            <div class="btn-row" style="margin-top:20px;">
+                <button class="btn btn-success" id="generateVoucherBtn">📄 生成电子转账凭证</button>
+                <button class="btn btn-outline" id="newTransferBtn">发起新转账</button>
+            </div>
+        </div>
+
+        <!-- 凭证预览区 -->
+        <div class="voucher-preview" id="voucherPreview">
+            <h3>📋 电子转账凭证预览</h3>
+            <div class="voucher-canvas-wrapper">
+                <canvas id="voucherCanvas" width="700" height="480"></canvas>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary btn-download" id="downloadVoucherBtn">⬇️ 下载凭证图片 (PNG)</button>
+                <button class="btn btn-outline" id="closePreviewBtn">关闭预览</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        © 中国建设银行股份有限公司 版权所有 | 客服热线：95533 | 本系统为模拟演示，仅供学习参考
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ========== DOM元素 ==========
+            const form = document.getElementById('transferForm');
+            const formView = document.getElementById('formView');
+            const resultPanel = document.getElementById('resultPanel');
+            const resultDetail = document.getElementById('resultDetail');
+            const voucherPreview = document.getElementById('voucherPreview');
+            const voucherCanvas = document.getElementById('voucherCanvas');
+            const steps = {
+                step1: document.getElementById('step1'),
+                step2: document.getElementById('step2'),
+                step3: document.getElementById('step3')
+            };
+
+            const payerName = document.getElementById('payerName');
+            const payerAccount = document.getElementById('payerAccount');
+            const payeeName = document.getElementById('payeeName');
+            const payeeAccount = document.getElementById('payeeAccount');
+            const payeeBank = document.getElementById('payeeBank');
+            const payeeBankOther = document.getElementById('payeeBankOther');
+            const otherBankGroup = document.getElementById('otherBankGroup');
+            const payeeBranch = document.getElementById('payeeBranch');
+            const amount = document.getElementById('amount');
+            const amountCn = document.getElementById('amountCn');
+            const purpose = document.getElementById('purpose');
+            const purposeOther = document.getElementById('purposeOther');
+            const otherPurposeGroup = document.getElementById('otherPurposeGroup');
+            const remark = document.getElementById('remark');
+            const smsCode = document.getElementById('smsCode');
+            const imageCaptcha = document.getElementById('imageCaptcha');
+            const captchaImg = document.getElementById('captchaImg');
+            const refreshCaptchaTip = document.getElementById('refreshCaptchaTip');
+            const sendSmsBtn = document.getElementById('sendSmsBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const generateVoucherBtn = document.getElementById('generateVoucherBtn');
+            const downloadVoucherBtn = document.getElementById('downloadVoucherBtn');
+            const newTransferBtn = document.getElementById('newTransferBtn');
+            const closePreviewBtn = document.getElementById('closePreviewBtn');
+            const toastContainer = document.getElementById('toastContainer');
+
+            // ========== 状态 ==========
+            let currentCaptchaText = '';
+            let smsCountdown = 0;
+            let smsTimer = null;
+            let generatedSmsCode = '';
+            let isSubmitting = false;
+            let transferData = null; // 存储转账数据用于生成凭证
+
+            // ========== 图形验证码 ==========
+            function generateCaptcha() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+                let code = '';
+                for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+                currentCaptchaText = code;
+                captchaImg.textContent = code;
+            }
+            function refreshCaptcha() {
+                generateCaptcha();
+                imageCaptcha.value = '';
+                clearFieldError(imageCaptcha);
+            }
+            captchaImg.addEventListener('click', refreshCaptcha);
+            refreshCaptchaTip.addEventListener('click', refreshCaptcha);
+
+            // ========== 金额转中文大写 ==========
+            function numberToChinese(numStr) {
+                if (!numStr || isNaN(parseFloat(numStr))) return '';
+                const n = parseFloat(numStr);
+                if (n <= 0 || n > 9999999999.99) return '';
+                const digits = '零壹贰叁肆伍陆柒捌玖';
+                const units = ['', '拾', '佰', '仟'];
+                const bigUnits = ['', '万', '亿'];
+                let [intPart, decPart] = numStr.split('.');
+                intPart = intPart.replace(/^0+/, '') || '0';
+                if (!decPart) decPart = '00';
+                decPart = (decPart + '00').slice(0, 2);
+                let result = '';
+                if (intPart === '0') { result = '零'; } else {
+                    let zeroFlag = false;
+                    for (let i = 0; i < intPart.length; i++) {
+                        let d = parseInt(intPart[i]);
+                        let pos = intPart.length - 1 - i;
+                        let unitIdx = pos % 4;
+                        let bigUnitIdx = Math.floor(pos / 4);
+                        if (d === 0) { zeroFlag = true; } else {
+                            if (zeroFlag) { result += '零'; zeroFlag = false; }
+                            result += digits[d] + units[unitIdx];
+                        }
+                        if (unitIdx === 0 && bigUnitIdx > 0 && !(d === 0 && i >= intPart.length - 3)) {
+                            let segStart = Math.max(0, intPart.length - (bigUnitIdx+1)*4);
+                            let segEnd = intPart.length - bigUnitIdx*4;
+                            if (!/^0+$/.test(intPart.substring(segStart, segEnd))) result += bigUnits[bigUnitIdx];
+                            zeroFlag = false;
+                        }
+                    }
+                }
+                result += '元';
+                let jiao = parseInt(decPart[0]), fen = parseInt(decPart[1]);
+                if (jiao === 0 && fen === 0) result += '整';
+                else {
+                    if (jiao > 0) result += digits[jiao] + '角'; else result += '零';
+                    if (fen > 0) result += digits[fen] + '分';
+                }
+                return result;
+            }
+            amount.addEventListener('input', function() {
+                let val = this.value.replace(/[^\d.]/g, '');
+                const dotCount = (val.match(/\./g) || []).length;
+                if (dotCount > 1) {
+                    const idx = val.indexOf('.');
+                    val = val.substring(0, idx+1) + val.substring(idx+1).replace(/\./g, '');
+                }
+                if (val.includes('.')) {
+                    let parts = val.split('.');
+                    if (parts[1].length > 2) val = parts[0] + '.' + parts[1].substring(0,2);
+                }
+                this.value = val;
+                if (val && !isNaN(parseFloat(val)) && parseFloat(val)>0 && parseFloat(val)<=9999999999.99) {
+                    amountCn.textContent = '大写：' + numberToChinese(val);
+                    amountCn.style.color = '#1B8C3C';
+                } else if (val) {
+                    amountCn.textContent = '金额超出范围或格式不正确';
+                    amountCn.style.color = '#D50000';
+                } else {
+                    amountCn.textContent = '';
+                }
+                clearFieldError(amount);
+            });
+
+            // ========== 联动 ==========
+            payeeBank.addEventListener('change', function() {
+                if (this.value === 'other') {
+                    otherBankGroup.style.display = 'flex';
+                } else {
+                    otherBankGroup.style.display = 'none';
+                    payeeBankOther.value = '';
+                    clearFieldError(payeeBankOther);
+                }
+                clearFieldError(payeeBank);
+            });
+            purpose.addEventListener('change', function() {
+                if (this.value === 'other') {
+                    otherPurposeGroup.style.display = 'flex';
+                } else {
+                    otherPurposeGroup.style.display = 'none';
+                    purposeOther.value = '';
+                    clearFieldError(purposeOther);
+                }
+                clearFieldError(purpose);
+            });
+
+            // ========== 错误处理 ==========
+            function clearFieldError(el) {
+                el.classList.remove('error');
+                const msg = el.parentElement.querySelector('.error-msg');
+                if (msg) msg.style.display = 'none';
+            }
+            function showFieldError(el) {
+                el.classList.add('error');
+                const msg = el.parentElement.querySelector('.error-msg');
+                if (msg) msg.style.display = 'flex';
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // ========== 短信验证码 ==========
+            function startSmsCountdown() {
+                smsCountdown = 60;
+                sendSmsBtn.disabled = true;
+                sendSmsBtn.textContent = `${smsCountdown}秒后重发`;
+                smsTimer = setInterval(() => {
+                    smsCountdown--;
+                    if (smsCountdown <= 0) {
+                        clearInterval(smsTimer);
+                        smsTimer = null;
+                        sendSmsBtn.disabled = false;
+                        sendSmsBtn.textContent = '获取验证码';
+                    } else {
+                        sendSmsBtn.textContent = `${smsCountdown}秒后重发`;
+                    }
+                }, 1000);
+            }
+            sendSmsBtn.addEventListener('click', function() {
+                if (smsTimer) return;
+                generatedSmsCode = String(Math.floor(100000 + Math.random() * 900000));
+                console.log('📱 模拟短信验证码:', generatedSmsCode);
+                startSmsCountdown();
+                smsCode.value = '';
+                clearFieldError(smsCode);
+                showMiniToast('验证码已发送至预留手机号（演示：' + generatedSmsCode + '）');
+            });
+
+            function showMiniToast(msg) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position:fixed;top:20px;left:50%;transform:translateX(-50%);
+                    background:#2C2E33;color:#fff;padding:12px 24px;border-radius:22px;
+                    font-size:14px;z-index:2000;animation:fadeIn 0.2s ease, fadeOut 0.3s ease 2s forwards;
+                    pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.25);
+                `;
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 2400);
+            }
+
+            // ========== 表单验证 ==========
+            function validateForm() {
+                let isValid = true;
+                if (!payerName.value.trim()) { showFieldError(payerName); isValid = false; } else clearFieldError(payerName);
+                if (!/^\d{19}$/.test(payerAccount.value.replace(/\s/g, ''))) { showFieldError(payerAccount); isValid = false; } else clearFieldError(payerAccount);
+                if (!payeeName.value.trim()) { showFieldError(payeeName); isValid = false; } else clearFieldError(payeeName);
+                if (!/^\d{10,25}$/.test(payeeAccount.value.replace(/\s/g, ''))) { showFieldError(payeeAccount); isValid = false; } else clearFieldError(payeeAccount);
+                if (!payeeBank.value) { showFieldError(payeeBank); isValid = false; } else {
+                    clearFieldError(payeeBank);
+                    if (payeeBank.value === 'other' && !payeeBankOther.value.trim()) { showFieldError(payeeBankOther); isValid = false; } else if (payeeBank.value === 'other') clearFieldError(payeeBankOther);
+                }
+                const amountVal = parseFloat(amount.value);
+                if (!amount.value || isNaN(amountVal) || amountVal<0.01 || amountVal>9999999999.99) { showFieldError(amount); isValid = false; } else clearFieldError(amount);
+                if (!purpose.value) { showFieldError(purpose); isValid = false; } else {
+                    clearFieldError(purpose);
+                    if (purpose.value === 'other' && !purposeOther.value.trim()) { showFieldError(purposeOther); isValid = false; } else if (purpose.value === 'other') clearFieldError(purposeOther);
+                }
+                if (!/^\d{6}$/.test(smsCode.value)) { showFieldError(smsCode); isValid = false; } else if (smsCode.value !== generatedSmsCode) {
+                    showFieldError(smsCode); isValid = false;
+                } else clearFieldError(smsCode);
+                if (!imageCaptcha.value.trim() || imageCaptcha.value.trim().toLowerCase() !== currentCaptchaText.toLowerCase()) {
+                    showFieldError(imageCaptcha); isValid = false;
+                } else clearFieldError(imageCaptcha);
+                return isValid;
+            }
+
+            // ========== 提交转账 ==========
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (isSubmitting) return;
+                if (!validateForm()) { refreshCaptcha(); return; }
+
+                const amountVal = parseFloat(amount.value);
+                if (!confirm(`即将向【${payeeName.value.trim()}】转账 ¥${amountVal.toFixed(2)}，请确认信息无误。`)) return;
+
+                isSubmitting = true;
+                submitBtn.disabled = true;
+                submitBtn.textContent = '提交中...';
+
+                setTimeout(() => {
+                    // 构造转账数据
+                    transferData = {
+                        payerName: payerName.value.trim(),
+                        payerAccount: payerAccount.value.replace(/\s/g, ''),
+                        payeeName: payeeName.value.trim(),
+                        payeeAccount: payeeAccount.value.replace(/\s/g, ''),
+                        payeeBank: payeeBank.value === 'other' ? payeeBankOther.value.trim() : payeeBank.value,
+                        payeeBranch: payeeBranch.value.trim() || '（未填写）',
+                        amount: amountVal.toFixed(2),
+                        amountCN: numberToChinese(amount.value),
+                        purpose: purpose.value === 'other' ? purposeOther.value.trim() : purpose.value,
+                        remark: remark.value.trim() || '无',
+                        transactionId: 'CCB' + new Date().getFullYear() + String(Math.floor(Math.random()*1e10)).padStart(10,'0'),
+                        transactionTime: new Date().toLocaleString('zh-CN', {hour12:false}),
+                    };
+                    // 更新结果面板
+                    resultDetail.innerHTML = `
+                        <p><span>流水号：</span>${transferData.transactionId}</p>
+                        <p><span>交易时间：</span>${transferData.transactionTime}</p>
+                        <p><span>付款方：</span>${transferData.payerName} (${transferData.payerAccount})</p>
+                        <p><span>收款方：</span>${transferData.payeeName} (${transferData.payeeAccount})</p>
+                        <p><span>收款银行：</span>${transferData.payeeBank} ${transferData.payeeBranch}</p>
+                        <p><span>金额：</span>¥${transferData.amount} (${transferData.amountCN})</p>
+                        <p><span>用途：</span>${transferData.purpose}</p>
+                        <p><span>备注：</span>${transferData.remark}</p>
+                    `;
+                    // 切换视图
+                    formView.style.display = 'none';
+                    resultPanel.classList.add('show');
+                    voucherPreview.classList.remove('show');
+                    // 更新步骤
+                    steps.step1.classList.remove('active'); steps.step1.classList.add('done');
+                    steps.step2.classList.remove('active'); steps.step2.classList.add('done');
+                    steps.step3.classList.add('active');
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '确认转账';
+                }, 1500);
+            });
+
+            // ========== 重置 ==========
+            function resetAll() {
+                form.reset();
+                payerName.value = payerAccount.value = payeeName.value = payeeAccount.value = '';
+                payeeBank.value = ''; payeeBankOther.value = ''; payeeBranch.value = '';
+                amount.value = ''; amountCn.textContent = '';
+                purpose.value = ''; purposeOther.value = ''; remark.value = '';
+                smsCode.value = ''; imageCaptcha.value = '';
+                generatedSmsCode = '';
+                otherBankGroup.style.display = 'none';
+                otherPurposeGroup.style.display = 'none';
+                document.querySelectorAll('.error-msg').forEach(m => m.style.display = 'none');
+                document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+                refreshCaptcha();
+                if (smsTimer) { clearInterval(smsTimer); smsTimer = null; }
+                smsCountdown = 0; sendSmsBtn.disabled = false; sendSmsBtn.textContent = '获取验证码';
+                transferData = null;
+                formView.style.display = 'block';
+                resultPanel.classList.remove('show');
+                voucherPreview.classList.remove('show');
+                steps.step1.classList.add('active'); steps.step1.classList.remove('done');
+                steps.step2.classList.remove('active','done');
+                steps.step3.classList.remove('active','done');
+                window.scrollTo({top:0, behavior:'smooth'});
+            }
+            resetBtn.addEventListener('click', ()=> { if(confirm('确定要重置所有信息吗？')) resetAll(); });
+            newTransferBtn.addEventListener('click', resetAll);
+            closePreviewBtn.addEventListener('click', ()=>{
+                voucherPreview.classList.remove('show');
+                resultPanel.classList.add('show');
+            });
+
+            // ========== 生成凭证图片 ==========
+            function drawVoucherOnCanvas(data) {
+                const canvas = voucherCanvas;
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0,0,w,h);
+                // 背景
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0,0,w,h);
+                // 边框
+                ctx.strokeStyle = '#0052A3';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(10,10,w-20,h-20);
+                // 内边框
+                ctx.strokeStyle = '#B0C4DE';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(20,20,w-40,h-40);
+
+                // 标题
+                ctx.fillStyle = '#0052A3';
+                ctx.font = 'bold 22px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('中国建设银行 电子转账凭证', w/2, 52);
+
+                // 分割线
+                ctx.strokeStyle = '#0052A3';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(40, 68); ctx.lineTo(w-40, 68); ctx.stroke();
+
+                // 信息表格
+                ctx.fillStyle = '#2C2E33';
+                ctx.font = '14px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.textAlign = 'left';
+                const leftX = 40, rightX = 400, lineH = 28;
+                let y = 92;
+                function drawRow(label, value, x1, x2, yPos) {
+                    ctx.fillStyle = '#555';
+                    ctx.fillText(label, x1, yPos);
+                    ctx.fillStyle = '#000';
+                    ctx.fillText(value, x1+110, yPos);
+                }
+                drawRow('交易流水号：', data.transactionId, leftX, rightX, y); y+=lineH;
+                drawRow('交易时间：', data.transactionTime, leftX, rightX, y); y+=lineH+6;
+
+                // 分隔虚线
+                ctx.strokeStyle = '#ccc';
+                ctx.setLineDash([4,4]);
+                ctx.beginPath(); ctx.moveTo(leftX, y); ctx.lineTo(w-leftX, y); ctx.stroke();
+                ctx.setLineDash([]);
+                y+=12;
+
+                drawRow('付款方名称：', data.payerName, leftX, rightX, y); y+=lineH;
+                drawRow('付款方账号：', data.payerAccount, leftX, rightX, y); y+=lineH;
+                drawRow('收款方名称：', data.payeeName, leftX, rightX, y); y+=lineH;
+                drawRow('收款方账号：', data.payeeAccount, leftX, rightX, y); y+=lineH;
+                drawRow('收款银行：', data.payeeBank + ' ' + data.payeeBranch, leftX, rightX, y); y+=lineH;
+                y+=4;
+                ctx.strokeStyle = '#ccc';
+                ctx.setLineDash([4,4]);
+                ctx.beginPath(); ctx.moveTo(leftX, y); ctx.lineTo(w-leftX, y); ctx.stroke();
+                ctx.setLineDash([]);
+                y+=12;
+
+                // 金额突出显示
+                ctx.font = 'bold 18px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.fillStyle = '#D50000';
+                ctx.fillText('¥ ' + data.amount, leftX+110, y);
+                ctx.font = '14px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.fillStyle = '#2C2E33';
+                ctx.fillText('（大写：' + data.amountCN + '）', leftX+260, y);
+                y+=lineH+4;
+
+                drawRow('用途：', data.purpose, leftX, rightX, y); y+=lineH;
+                drawRow('备注：', data.remark, leftX, rightX, y); y+=lineH+8;
+
+                // 电子回单验证码
+                const verifyCode = 'VD' + Math.random().toString(36).substring(2,8).toUpperCase();
+                ctx.fillStyle = '#888';
+                ctx.font = '12px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.fillText('电子回单验证码：' + verifyCode, leftX, y);
+                y+=20;
+
+                // 银行电子章 (圆形)
+                const sealX = w-130, sealY = h-120, sealR = 45;
+                ctx.save();
+                ctx.strokeStyle = '#C00';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(sealX, sealY, sealR, 0, Math.PI*2); ctx.stroke();
+                ctx.font = 'bold 13px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.fillStyle = '#C00';
+                ctx.textAlign = 'center';
+                ctx.fillText('中国建设银行', sealX, sealY-8);
+                ctx.fillText('电子回单专用章', sealX, sealY+14);
+                ctx.restore();
+
+                // 底部提示
+                ctx.fillStyle = '#999';
+                ctx.font = '11px "Microsoft YaHei","PingFang SC",sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('本凭证为电子回单，仅供核对使用，不作为收款依据。', w/2, h-30);
+            }
+
+            generateVoucherBtn.addEventListener('click', function() {
+                if (!transferData) {
+                    alert('暂无转账数据，请先完成转账。');
+                    return;
+                }
+                drawVoucherOnCanvas(transferData);
+                voucherPreview.classList.add('show');
+                resultPanel.classList.remove('show');
+                steps.step3.classList.add('active');
+                window.scrollTo({top: voucherPreview.offsetTop - 100, behavior:'smooth'});
+            });
+
+            // ========== 下载凭证 ==========
+            downloadVoucherBtn.addEventListener('click', function() {
+                if (!transferData) return;
+                // 确保canvas已绘制
+                drawVoucherOnCanvas(transferData);
+                const link = document.createElement('a');
+                link.download = `建行电子转账凭证_${transferData.transactionId}.png`;
+                link.href = voucherCanvas.toDataURL('image/png');
+                link.click();
+                showMiniToast('凭证图片已开始下载');
+            });
+
+            // ========== 初始化 ==========
+            generateCaptcha();
+            // 可预填演示数据（方便测试）
+            // payerName.value='深圳科技有限公司'; payerAccount.value='6227001234567890123';
+            // payeeName.value='北京商贸有限公司'; payeeAccount.value='6228009876543210987';
+            // payeeBank.value='中国工商银行'; amount.value='158000.00'; amountCn.textContent='大写：壹拾伍万捌仟元整'; amountCn.style.color='#1B8C3C';
+            // purpose.value='货款';
+        })();
+    </script>
+</body>
+</html>
